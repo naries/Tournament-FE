@@ -9,13 +9,14 @@ const SignUp = () => {
     auth: { signup },
   } = useDispatch<Dispatch>();
 
-  const [credentials, setCredentials] = useState<AuthModel & { fplid: string }>(
-    {
-      emailAddress: "",
-      password: "",
-      fplid: "",
-    }
-  );
+  const [credentials, setCredentials] = useState<
+    AuthModel & { fplid: string; username: string }
+  >({
+    emailAddress: "",
+    password: "",
+    fplid: "",
+    username: "",
+  });
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,6 +47,14 @@ const SignUp = () => {
           type="text"
           name="fplid"
           value={credentials.fplid}
+          onChange={handleChange}
+        />
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          name="username"
+          value={credentials.username}
           onChange={handleChange}
         />
         <label htmlFor="password">Password</label>

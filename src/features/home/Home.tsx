@@ -8,8 +8,12 @@ const Home = () => {
   }>({
     amount: "",
   });
+
   const [errors, setErrors] = useState<{ amount: string } | null>();
   const { status, data } = useSelector((state: RootState) => state.home);
+  const { status: initStatus } = useSelector(
+    (state: RootState) => state.initialize
+  );
   const {
     status: generateLinkStatus,
     data: { generatedLink },
@@ -18,11 +22,16 @@ const Home = () => {
     auth: { signedOut },
     home: { getUserInformation },
     payment: { getLink },
+    initialize: { getVerifyPayment },
   } = useDispatch<Dispatch>();
 
   useEffect(() => {
-    getUserInformation();
+    getVerifyPayment();
   }, []);
+
+  useEffect(() => {
+    if (initStatus === "success") getUserInformation();
+  }, [initStatus]);
 
   const validate = () => {
     if (!input.amount.trim()) {
@@ -45,14 +54,16 @@ const Home = () => {
 
   return (
     <div>
-      <div>Home</div>
+      {initStatus === "success" && <div>Home</div>}
       {status === "loading" && <div> Loading </div>}
 
       {status === "error" && (
         <div> Something went wrong. Reload page and try again. </div>
       )}
 
-      {status === "success" && (
+      {initStatus !== "success" && <div>Initializing...</div>}
+
+      {initStatus === "success" && status === "success" && (
         <div>
           <div>Welcome {data?.managerDetails?.player_first_name}</div>
           <div>Team Name: {data?.managerDetails?.name} </div>
@@ -88,7 +99,10 @@ const Home = () => {
             </button>
             {!!errors?.amount && <div>{errors?.amount}</div>}
           </form>
-          <div></div>
+          <div>
+            If payment is successful and wallet amount is not updated, kindly
+            refresh the page.
+          </div>
         </div>
       )}
       <button onClick={() => signedOut()}>Sign out</button>

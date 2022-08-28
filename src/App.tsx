@@ -8,8 +8,6 @@ import { Home } from "./features/home";
 function App() {
   const authentication = useSelector((state: RootState) => state.auth);
 
-  console.log(authentication);
-
   return (
     <div className="App">
       <Router>
